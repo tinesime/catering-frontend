@@ -44,7 +44,6 @@ import {ref, computed, onMounted} from 'vue'
 import axios from 'axios'
 import moment from 'moment'
 import Menu from "@/components/Menu.vue";
-import {defineProps, defineEmits} from 'vue'
 import {useStore} from 'vuex'
 
 const props = defineProps({
@@ -59,15 +58,7 @@ const emit = defineEmits(['week-changed'])
 const currentWeekIndex = ref(0)
 const currentWeek = ref([])
 
-const fetchCurrentDate = async () => {
-  try {
-    const response = await axios.get('http://worldtimeapi.org/api/timezone/Etc/UTC')
-    const currentDate = new Date(response.data.datetime)
-    generateWeekDates(currentDate)
-  } catch (error) {
-    console.error('Error fetching current date:', error)
-  }
-}
+let currentDate = moment().toDate()
 
 const generateWeekDates = (startDate) => {
   const startOfWeek = startDate.getDate() - startDate.getDay() + 1
@@ -123,8 +114,8 @@ const getItemsForDay = (date) => {
   return props.menus.filter(menu => moment.utc(menu.date).format('YYYY-MM-DD') === formatedDate)
 }
 
-onMounted(async () => {
-  await fetchCurrentDate()
+onMounted(() => {
+  generateWeekDates(currentDate)
 })
 </script>
 

@@ -76,9 +76,6 @@ const orderMenu = async () => {
     return
   }
 
-  console.log('Ordering menu:', props.menu)
-  console.log('orderedMenu:', orderedMenu.value)
-
   if (orderedMenu.value) {
     alert('Das Menü wurde bereits bestellt')
   } else {

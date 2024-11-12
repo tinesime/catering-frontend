@@ -33,10 +33,10 @@
 
 <script setup>
 import {ref, onMounted, computed} from 'vue'
-import axios from "axios"
 import {useRouter} from 'vue-router'
 import {useStore} from 'vuex'
 import moment from 'moment'
+import api from '../interceptor'
 
 const router = useRouter()
 const store = useStore()
@@ -45,14 +45,14 @@ const orders = ref([])
 
 const fetchOrders = async () => {
   try {
-    const response = await axios.get(`/ordered`, {
+    const response = await api.get(`/ordered`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
 
     orders.value = await Promise.all(response.data.map(async order => {
-      const menuResponse = await axios.get(`/menu/${order.menuId}`, {
+      const menuResponse = await api.get(`/menu/${order.menuId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -66,7 +66,6 @@ const fetchOrders = async () => {
       }
     }))
 
-    console.log(orders.value)
   } catch (error) {
     console.error('Error getting orders:', error)
   }
@@ -74,7 +73,7 @@ const fetchOrders = async () => {
 
 const cancelOrder = async (orderId) => {
   try {
-    await axios.delete(`/cancel/${orderId}`, {
+    await api.delete(`/cancel/${orderId}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
